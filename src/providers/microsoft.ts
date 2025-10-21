@@ -2,12 +2,12 @@ import { urlEncode, exchangeToken, fetchUser } from "../utils";
 import type { Methods } from "../types";
 
 const microsoft: Methods = {
-  requestCode({ id, redirect_uri, state, challenge }) {
+  requestCode({ id, redirect_uri, state, challenge, scope = "User.Read" }) {
     const params = urlEncode({
       client_id: id,
       redirect_uri,
       response_type: "code",
-      scope: "User.Read",
+      scope,
       state,
       code_challenge: challenge,
       code_challenge_method: "S256"

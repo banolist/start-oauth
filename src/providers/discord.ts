@@ -2,10 +2,16 @@ import { urlEncode, exchangeToken, fetchUser } from "../utils";
 import type { Methods } from "../types";
 
 const discord: Methods = {
-  requestCode({ id, redirect_uri, state, challenge }) {
+  requestCode({
+    id,
+    redirect_uri,
+    state,
+    challenge,
+    scope = ["identify", "email"]
+  }) {
     const params = urlEncode({
       response_type: "code",
-      scope: ["identify", "email"],
+      scope,
       client_id: id,
       redirect_uri,
       state,
@@ -30,6 +36,7 @@ const discord: Methods = {
     );
     if (!verified || !email) throw new Error("Email not verified");
     return {
+      id,
       name: username,
       email: email.toLowerCase(),
       image: `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`,

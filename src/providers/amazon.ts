@@ -2,10 +2,10 @@ import { urlEncode, exchangeToken, fetchUser } from "../utils";
 import type { Methods } from "../types";
 
 const amazon: Methods = {
-  requestCode({ id, redirect_uri, state, challenge }) {
+  requestCode({ id, redirect_uri, state, challenge, scope = "profile" }) {
     const params = urlEncode({
       response_type: "code",
-      scope: "profile",
+      scope,
       client_id: id,
       redirect_uri,
       state,

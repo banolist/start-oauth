@@ -2,12 +2,18 @@ import { urlEncode, exchangeToken, fetchUser } from "../utils";
 import type { Methods } from "../types";
 
 const spotify: Methods = {
-  requestCode({ id, redirect_uri, state, challenge }) {
+  requestCode({
+    id,
+    redirect_uri,
+    state,
+    challenge,
+    scope = ["user-read-private", "user-read-email"]
+  }) {
     const params = urlEncode({
       client_id: id,
       response_type: "code",
       redirect_uri,
-      scope: ["user-read-private", "user-read-email"],
+      scope,
       state,
       code_challenge: challenge,
       code_challenge_method: "S256"
@@ -24,12 +30,13 @@ const spotify: Methods = {
     );
   },
   async requestUser(token) {
-    const { display_name, email, images } = await fetchUser(
+    const { display_name, email, images, id } = await fetchUser(
       "https://api.spotify.com/v1/me",
       token
     );
     if (!email) throw new Error("Email not available");
     return {
+      id,
       name: display_name,
       email: email.toLowerCase(),
       image: images?.[0]?.url,

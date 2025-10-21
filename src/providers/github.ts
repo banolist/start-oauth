@@ -2,9 +2,9 @@ import { urlEncode, exchangeToken, fetchUser } from "../utils";
 import type { Methods } from "../types";
 
 const github: Methods = {
-  requestCode({ id, redirect_uri, state, challenge }) {
+  requestCode({ id, redirect_uri, state, challenge, scope = "user:email" }) {
     const params = urlEncode({
-      scope: "user:email",
+      scope,
       client_id: id,
       redirect_uri,
       state,
@@ -23,13 +23,16 @@ const github: Methods = {
     );
   },
   async requestUser(token) {
-    const [{ name, avatar_url }, emails] = await Promise.all([
+    const [{ name, avatar_url, id: intID }, emails] = await Promise.all([
       fetchUser("https://api.github.com/user", token),
       fetchUser("https://api.github.com/user/emails", token)
     ]);
     const primary = emails.find(({ primary, verified }) => primary && verified);
     if (!primary) throw new Error("Email not verified");
+
+    const id = String(intID);
     return {
+      id,
       name,
       email: primary.email.toLowerCase(),
       image: avatar_url,

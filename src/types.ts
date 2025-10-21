@@ -6,7 +6,12 @@ export interface Identifiers {
   secret: string;
 }
 
+export interface ProvderOptions {
+  scope?: string[] | string;
+}
+
 export interface User {
+  id?: string;
   name: string;
   email: string;
   image?: string;
@@ -22,11 +27,12 @@ export type Token = Promise<{ token_type: string; access_token: string }>;
 
 export interface Methods {
   requestCode(
-    params: Pick<Identifiers, "id"> & {
-      redirect_uri: string;
-      state: string;
-      challenge: string;
-    }
+    params: Pick<Identifiers, "id"> &
+      ProvderOptions & {
+        redirect_uri: string;
+        state: string;
+        challenge: string;
+      }
   ): string;
   requestToken(
     params: Identifiers & {

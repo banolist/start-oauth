@@ -2,12 +2,18 @@ import { urlEncode, exchangeToken, fetchUser } from "../utils";
 import type { Methods } from "../types";
 
 const x: Methods = {
-  requestCode({ id, redirect_uri, state, challenge }) {
+  requestCode({
+    id,
+    redirect_uri,
+    state,
+    challenge,
+    scope = ["users.email", "users.read", "offline.access"]
+  }) {
     const params = urlEncode({
       client_id: id,
       redirect_uri,
       response_type: "code",
-      scope: ["users.email", "users.read", "offline.access"],
+      scope,
       state,
       code_challenge: challenge,
       code_challenge_method: "S256"
@@ -30,6 +36,7 @@ const x: Methods = {
     );
     if (!data.confirmed_email) throw new Error("Email not available");
     return {
+      id: data.id,
       name: data.name,
       email: data.confirmed_email.toLowerCase(),
       image: data.profile_image_url,
