@@ -1,6 +1,9 @@
 {
-  "name": "start-oauth",
-  "version": "1.3.0",
+  "name": "@banolist/start-oauth",
+  "version": "1.0.0",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "description": "Lightweight and Secure OAuth2 for SolidStart",
   "keywords": [
     "api",
